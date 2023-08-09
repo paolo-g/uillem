@@ -21,7 +21,7 @@ class Search extends StatelessWidget {
             controller: promptController,
             decoration: InputDecoration(
               border: OutlineInputBorder(),
-              hintText: 'eg. Describe why the sky is blue',
+              hintText: 'eg. Why is the sky blue?',
             ),
             onSubmitted: (prompt) async {
               await frontendState.getPromptResult(prompt);

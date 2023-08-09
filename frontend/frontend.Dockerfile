@@ -1,6 +1,7 @@
 # syntax=docker/dockerfile:1
 
 FROM debian:stable-slim
+ARG ENABLE_PRESETS
 ARG ENABLE_PROMPT
 
 # Install flutter dependencies
@@ -19,7 +20,7 @@ RUN flutter upgrade
 RUN mkdir /app/
 COPY . /app/
 WORKDIR /app/
-RUN flutter build web --dart-define="ENABLE_PROMPT=${ENABLE_PROMPT}"
+RUN flutter build web --dart-define="ENABLE_PRESETS=${ENABLE_PRESETS}" --dart-define="ENABLE_PROMPT=${ENABLE_PROMPT}"
 
 # Download preset prompts
 WORKDIR /app/build/web/assets
