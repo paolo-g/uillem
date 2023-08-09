@@ -44,6 +44,7 @@ class _PresetsState extends State<Presets> {
   Widget build(BuildContext context) {
     var frontendState = context.watch<FrontendState>();
     var promptController = frontendState.promptController;
+    var isPrompting = frontendState.isPrompting;
 
     return SizedBox(
       height: 200,
@@ -56,6 +57,7 @@ class _PresetsState extends State<Presets> {
               leading: Image.memory(preset[1], width: 99, height: 99),
               title: Text(preset[0]),
               onTap: () async {
+                if (isPrompting) return;
                 promptController.value = TextEditingValue(text: preset[0]);
                 await frontendState.getPromptResult(preset[0]);
               },
