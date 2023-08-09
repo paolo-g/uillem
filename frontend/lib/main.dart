@@ -20,6 +20,7 @@ class Frontend extends StatelessWidget {
         title: 'Uillem',
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.lightBlue),
+          fontFamily: 'Raleway',
           useMaterial3: true,
         ),
         home: Root(),

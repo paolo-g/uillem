@@ -13,14 +13,14 @@ RUN apt-get clean
 RUN git clone -b 3.10.6 https://github.com/flutter/flutter.git /usr/local/flutter
 ENV PATH="${PATH}:/usr/local/flutter/bin:/usr/local/flutter/bin/cache/dart-sdk/bin"
 RUN flutter doctor
-RUN flutter channel master
+RUN flutter channel stable
 RUN flutter upgrade
 
 # Copy over flutter app and build
 RUN mkdir /app/
 COPY . /app/
 WORKDIR /app/
-RUN flutter build web --dart-define="ENABLE_PRESETS=${ENABLE_PRESETS}" --dart-define="ENABLE_PROMPT=${ENABLE_PROMPT}"
+RUN flutter build web --dart-define="ENABLE_PRESETS=${ENABLE_PRESETS}" --dart-define="ENABLE_PROMPT=${ENABLE_PROMPT}" --web-renderer html
 
 # Download preset prompts
 WORKDIR /app/build/web/assets
