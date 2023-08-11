@@ -1,6 +1,6 @@
 # Uillem
 
-An offline, containerized LLM interface. Plug in any llama.cpp supported model. Builds with optional search and preset educational prompts.
+An offline, containerized LLM interface. Plug in any llama.cpp supported model.
 
 ## Requirements
 
@@ -34,23 +34,15 @@ The `/.env` file contains configuration options.
 
 ### Model
 
-The build comes with a stock 7B LLM, but you can plug in any model supported by llama.cpp (https://github.com/ggerganov/llama.cpp) using the `MODEL_HOST_URL` env var.
+The build comes with a stock 7B LLM, but you can plug in any model supported by llama.cpp (https://github.com/ggerganov/llama.cpp).
 
-`MODEL_HOST_URL` is the download path that curl uses to download the model you select.
-
-`MODEL_FILENAME` is used as an internal file reference.
+`MODEL_HOST_URL` is the path curl uses to download the model you select.
 
 ### Resources
 
 By default, the configuration uses 5 threads. The number of threads and the CPU performance will affect how long results take to generate.
 
-`THREAD_LIMIT` should be set to match the number of CPU cores shared in Docker
-
-### Features
-
-Set `ENABLE_PRESETS` to `false` to hide the preset prompts.
-
-Set `ENABLE_PROMPT` to `false` to hide the input prompt.
+`THREAD_LIMIT` should be set to match the number of CPU cores shared in Docker.
 
 ## License and Usage
 
