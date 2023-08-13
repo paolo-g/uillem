@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
+	"strconv"
 	"strings"
 )
 
@@ -30,18 +31,46 @@ func HandleExec(w http.ResponseWriter, req *http.Request) {
   defer unblock()
   blocking = true
 
-  // Gather user's input prompt
-  var prompt string
+  // Gather request parameters
   req.ParseForm()
+  args := []string{"-m", os.ExpandEnv("./models/$MODEL_FILENAME"),
+                      "-b", "256",
+                      "--n-predict", "-1",
+                      "--repeat-penalty", "1.3",
+                      "--temp", "0.1",
+                      "--threads", os.ExpandEnv("$THREAD_LIMIT"),
+                      "--top_k", "10000"}
+
+  // Context size
+  var ctx_size_str string
+  if cs, ok := req.Form["ctx_size"]; ok {
+    ctx_size_str = strings.Join(cs, "")
+    _, err := strconv.Atoi(ctx_size_str) // Must be an integer
+      if err != nil {
+        fmt.Println("Provided context size is not an integer", ctx_size_str)
+        w.WriteHeader(400)
+        w.Write([]byte("Bad Request"))
+        return
+      }
+  }
+  if len(ctx_size_str) > 0 {
+    args = append(args, "--ctx-size", ctx_size_str)
+  }
+
+  // Prompt
+  var prompt string
   if p, ok := req.Form["p"]; ok {
     prompt = strings.Join(p, " ")
-  } else {
-    // Prompt does not exist
+  }
+  prompt_len := len(prompt) // Non-zero length
+  if prompt_len == 0 {
+    fmt.Println("Empty prompt")
     w.WriteHeader(400)
     w.Write([]byte("Bad Request"))
     return
   }
-
+  prompt = strings.Replace(prompt, "\"", "", -1) // Escape double quotes
+  args = append(args, "--prompt", fmt.Sprintf("\"%s\"", prompt))
   fmt.Println("Prompting with:", prompt)
 
   // Check if we already handled this prompt
@@ -52,15 +81,7 @@ func HandleExec(w http.ResponseWriter, req *http.Request) {
   }
 
   // Call llama.cpp and collect output from selected model
-  args := []string{"-m", os.ExpandEnv("./models/$MODEL_FILENAME"),
-                    "-b", "256",
-                    "--ctx-size", "4096",
-                    "--n-predict", "-1",
-                    "--repeat-penalty", "1.3",
-                    "--temp", "0.1",
-                    "--threads", os.ExpandEnv("$THREAD_LIMIT"),
-                    "--top_k", "10000",
-                    "--prompt", prompt}
+  fmt.Println("main() args:", strings.Join(args, " "))
   output, err := exec.Command("./main", args...).Output()
   if err != nil {
     w.WriteHeader(500)
