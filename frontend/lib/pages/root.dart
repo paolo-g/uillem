@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:frontend/pages/prompt/prompt.dart';
 import 'package:frontend/pages/results/results.dart';
+import 'package:frontend/pages/settings/settings.dart';
 
 
 class Root extends StatefulWidget {
@@ -24,6 +25,9 @@ class _RootState extends State<Root> {
       case 1:
         page = ResultsPage();
         break;
+      case 2:
+        page = SettingsPage();
+        break;
       default:
         throw UnimplementedError('No page for $selectedIndex');
     }
@@ -42,6 +46,10 @@ class _RootState extends State<Root> {
                 NavigationRailDestination(
                   icon: Icon(Icons.history),
                   label: Text('Results'),
+                ),
+                NavigationRailDestination(
+                  icon: Icon(Icons.settings),
+                  label: Text('Settings'),
                 ),
               ],
               selectedIndex: selectedIndex,

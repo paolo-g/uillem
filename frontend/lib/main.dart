@@ -40,6 +40,9 @@ class FrontendState extends ChangeNotifier {
   var isPrompting = false;
   var paragraphs = [];
 
+  final TextEditingController batchSizeController = TextEditingController(text: '256');
+  final TextEditingController contextSizeController = TextEditingController(text: '4096');
+
   getPromptResult(String prompt) async {
     if (cache.containsKey(prompt)) {
       paragraphs = cache[prompt];
@@ -52,10 +55,19 @@ class FrontendState extends ChangeNotifier {
     paragraphs = [];
     notifyListeners();
 
+    // Configure request args (prompt required)
+    var args = {'p': prompt};
+    if (batchSizeController.text.length > 0) {
+      args['batch_size'] = batchSizeController.text;
+    }
+    if (contextSizeController.text.length > 0) {
+      args['ctx_size'] = contextSizeController.text;
+    }
+
     var url = Uri.http(
       'localhost:8088',
       'prompt',
-      {'p': prompt},
+      args,
     );
 
     var response = Response('', 400);

@@ -34,12 +34,27 @@ func HandleExec(w http.ResponseWriter, req *http.Request) {
   // Gather request parameters
   req.ParseForm()
   args := []string{"-m", os.ExpandEnv("./models/$MODEL_FILENAME"),
-                      "-b", "256",
                       "--n-predict", "-1",
                       "--repeat-penalty", "1.3",
                       "--temp", "0.1",
                       "--threads", os.ExpandEnv("$THREAD_LIMIT"),
                       "--top_k", "10000"}
+
+  // Batch size
+  var batch_size_str string
+  if bs, ok := req.Form["batch_size"]; ok {
+    batch_size_str = strings.Join(bs, "")
+    _, err := strconv.Atoi(batch_size_str) // Must be an integer
+      if err != nil {
+        fmt.Println("Provided batch size is not an integer", batch_size_str)
+        w.WriteHeader(400)
+        w.Write([]byte("Bad Request"))
+        return
+      }
+  }
+  if len(batch_size_str) > 0 {
+    args = append(args, "-b", batch_size_str)
+  }
 
   // Context size
   var ctx_size_str string

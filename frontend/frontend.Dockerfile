@@ -13,8 +13,6 @@ RUN apt-get clean
 RUN git clone -b 3.10.6 https://github.com/flutter/flutter.git /usr/local/flutter
 ENV PATH="${PATH}:/usr/local/flutter/bin:/usr/local/flutter/bin/cache/dart-sdk/bin"
 RUN flutter doctor
-RUN flutter channel stable
-RUN flutter upgrade
 
 # Copy over flutter app and build
 RUN mkdir /app/
