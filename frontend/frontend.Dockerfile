@@ -10,7 +10,7 @@ RUN apt-get install -y curl git python3 unzip
 RUN apt-get clean
 
 # Setup flutter
-RUN git clone -b 3.10.6 https://github.com/flutter/flutter.git /usr/local/flutter
+RUN git clone --depth 1 -b 3.10.6 https://github.com/flutter/flutter.git /usr/local/flutter
 ENV PATH="${PATH}:/usr/local/flutter/bin:/usr/local/flutter/bin/cache/dart-sdk/bin"
 RUN flutter doctor
 
@@ -18,11 +18,8 @@ RUN flutter doctor
 RUN mkdir /app/
 COPY . /app/
 WORKDIR /app/
+RUN flutter clean
 RUN flutter build web --dart-define="ENABLE_PRESETS=${ENABLE_PRESETS}" --dart-define="ENABLE_PROMPT=${ENABLE_PROMPT}" --web-renderer html
-
-# Download preset prompts
-WORKDIR /app/build/web/assets
-RUN curl -LO "https://pub-6936fbc2cd9842768dd645327529db88.r2.dev/presets.csv"
 
 # Serve assets
 WORKDIR /app/build/web
