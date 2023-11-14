@@ -15,9 +15,9 @@ COPY . .
 RUN GOOS=linux go build -o /usr/local/bin/uillem .
 
 # Build llama.cpp
-RUN git clone --depth 1 -b b1266 https://github.com/ggerganov/llama.cpp.git
+RUN git clone --depth 1 -b b1513 https://github.com/ggerganov/llama.cpp.git
 WORKDIR /llama.cpp
-RUN make LLAMA_OPENBLAS=1
+RUN make LLAMA_OPENBLAS=1 UNAME_M=arm64 UNAME_P=arm LLAMA_NO_METAL=1
 
 # Download the model
 WORKDIR /llama.cpp/models
