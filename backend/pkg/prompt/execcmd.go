@@ -1,13 +1,13 @@
 package prompt
 
 import (
+  "bytes"
   "fmt"
-	"log"
-	"net/http"
-	"os"
-	"os/exec"
-	"strconv"
-	"strings"
+  "net/http"
+  "os"
+  "os/exec"
+  "strconv"
+  "strings"
 )
 
 
@@ -97,14 +97,20 @@ func HandleExec(w http.ResponseWriter, req *http.Request) {
 
   // Call llama.cpp and collect output from selected model
   fmt.Println("main() args:", strings.Join(args, " "))
-  output, err := exec.Command("./main", args...).Output()
+  cmd := exec.Command("./main", args...)
+  var out bytes.Buffer
+  var stderr bytes.Buffer
+  cmd.Stdout = &out
+  cmd.Stderr = &stderr
+  err := cmd.Run()
   if err != nil {
+    fmt.Println(fmt.Sprint(err) + ": " + stderr.String())
+
     w.WriteHeader(500)
     w.Write([]byte("Server Error"))
-    log.Fatal(err)
     return
   }
-
+  var output = string(out.String())
   response := string(output[:])
   fmt.Println("Response:", response)
 
