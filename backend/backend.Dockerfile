@@ -3,10 +3,11 @@
 FROM golang:1.19-alpine
 ARG MODEL_FILENAME
 ARG MODEL_HOST_URL
+ARG THREAD_LIMIT
 
 RUN set -ex; \
     apk update; \
-    apk add build-base curl git make openblas-dev
+    apk add build-base curl git cmake openblas-dev
 
 WORKDIR /
 COPY . .
@@ -15,9 +16,10 @@ COPY . .
 RUN GOOS=linux go build -o /usr/local/bin/uillem .
 
 # Build llama.cpp
-RUN git clone --depth 1 -b b1513 https://github.com/ggerganov/llama.cpp.git
+RUN git clone --depth 1 -b b4404 https://github.com/ggerganov/llama.cpp.git
 WORKDIR /llama.cpp
-RUN make LLAMA_OPENBLAS=1 UNAME_M=arm64 UNAME_P=arm LLAMA_NO_METAL=1
+RUN cmake -B build -DGGML_BLAS=ON -DGGML_BLAS_VENDOR=OpenBLAS
+RUN cmake --build build --config Release
 
 # Download the model
 WORKDIR /llama.cpp/models

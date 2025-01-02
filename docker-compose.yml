@@ -1,5 +1,3 @@
-version: '3'
-
 services:
   frontend:
     build:
@@ -15,6 +13,7 @@ services:
       args:
         MODEL_FILENAME: ${MODEL_FILENAME}
         MODEL_HOST_URL: ${MODEL_HOST_URL}
+        THREAD_LIMIT: ${THREAD_LIMIT}
       context: backend
       dockerfile: backend.Dockerfile
     environment:

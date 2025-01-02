@@ -40,7 +40,7 @@ class FrontendState extends ChangeNotifier {
   var isPrompting = false;
   var paragraphs = [];
 
-  final TextEditingController batchSizeController = TextEditingController(text: '256');
+  final TextEditingController batchSizeController = TextEditingController(text: '2048');
   final TextEditingController contextSizeController = TextEditingController(text: '4096');
 
   getPromptResult(String prompt) async {

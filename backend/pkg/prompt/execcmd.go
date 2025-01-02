@@ -34,11 +34,12 @@ func HandleExec(w http.ResponseWriter, req *http.Request) {
   // Gather request parameters
   req.ParseForm()
   args := []string{"-m", os.ExpandEnv("./models/$MODEL_FILENAME"),
-                      "--n-predict", "-1",
-                      "--repeat-penalty", "1.3",
-                      "--temp", "0.1",
+//                      "--n-predict", "-1",
+//                      "--repeat-penalty", "1.3",
+//                      "--temp", "0.1",
                       "--threads", os.ExpandEnv("$THREAD_LIMIT"),
-                      "--top_k", "10000"}
+//                      "--top_k", "10000"
+                      }
 
   // Batch size
   var batch_size_str string
@@ -97,7 +98,7 @@ func HandleExec(w http.ResponseWriter, req *http.Request) {
 
   // Call llama.cpp and collect output from selected model
   fmt.Println("main() args:", strings.Join(args, " "))
-  cmd := exec.Command("./main", args...)
+  cmd := exec.Command("./build/bin/llama-cli", args...)
   var out bytes.Buffer
   var stderr bytes.Buffer
   cmd.Stdout = &out
